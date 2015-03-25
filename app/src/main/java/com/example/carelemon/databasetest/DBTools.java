@@ -20,7 +20,7 @@ public class DBTools extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
 
-        String query = "CREATE TABLE mp3s (mp3ID INTEGER PRIMARY KEY, composer TEXT, piece TEXT, work TEXT)";
+        String query = "CREATE TABLE mp3s (mp3ID INTEGER PRIMARY KEY, composer TEXT, piece TEXT, work TEXT, genre TEXT)";
 
         database.execSQL(query);
 
@@ -46,12 +46,14 @@ public class DBTools extends SQLiteOpenHelper {
         values.put("composer", queryValues.get("composer"));
         values.put("piece", queryValues.get("piece"));
         values.put("work", queryValues.get("work"));
+        values.put("genre", queryValues.get("genre"));
 
         database.insert("mp3s", null, values);
 
         database.close();
 
     }
+
 
     public int updateMp3(HashMap<String, String> queryValues) {
 
@@ -63,11 +65,14 @@ public class DBTools extends SQLiteOpenHelper {
         values.put("composer", queryValues.get("composer"));
         values.put("piece", queryValues.get("piece"));
         values.put("work", queryValues.get("work"));
+        values.put("genre", queryValues.get("genre"));
+
 
         return database.update("mp3s", values, "mp3ID" + " = ?", new String[] {queryValues.get("mp3ID")});
 
     }
 
+    //delete mp3
     public void deleteMp3(String id) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -126,10 +131,12 @@ public class DBTools extends SQLiteOpenHelper {
 
             do {
 
-                mp3Map.put("mp3ID", cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (mp3ID)
+                mp3Map.put("mp3ID", cursor.getString(0));    // "cursor.getString(0)" is the first field of the DB (mp3ID)
                 mp3Map.put("composer", cursor.getString(1));
                 mp3Map.put("piece", cursor.getString(2));
                 mp3Map.put("work", cursor.getString(3));
+                mp3Map.put("genre", cursor.getString(4));
+
 
             } while (cursor.moveToNext());
 
