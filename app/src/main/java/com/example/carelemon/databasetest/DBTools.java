@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.MediaMetadataRetriever;
+import android.os.Environment;
+import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,10 +17,10 @@ import java.util.HashMap;
 public class DBTools extends SQLiteOpenHelper {
 
 
-   public DBTools(Context applicationContext) {
+    public DBTools(Context applicationContext) {
 
-       super(applicationContext, "mp3.db", null, 1);
-   }
+        super(applicationContext, "mp3.db", null, 1);
+    }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
@@ -69,7 +73,7 @@ public class DBTools extends SQLiteOpenHelper {
         values.put("genre", queryValues.get("genre"));
 
 
-        return database.update("mp3s", values, "mp3ID" + " = ?", new String[] {queryValues.get("mp3ID")});
+        return database.update("mp3s", values, "mp3ID" + " = ?", new String[]{queryValues.get("mp3ID")});
 
     }
 
@@ -95,21 +99,21 @@ public class DBTools extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
 
-           do {
+            do {
 
-               HashMap<String, String> mp3Map = new HashMap<String, String>();
+                HashMap<String, String> mp3Map = new HashMap<String, String>();
 
-               mp3Map.put("mp3ID", cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (mp3ID)
-               mp3Map.put("composer", cursor.getString(1));
-               mp3Map.put("piece", cursor.getString(2));
-               mp3Map.put("work", cursor.getString(3));
+                mp3Map.put("mp3ID", cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (mp3ID)
+                mp3Map.put("composer", cursor.getString(1));
+                mp3Map.put("piece", cursor.getString(2));
+                mp3Map.put("work", cursor.getString(3));
 
-               mp3ArrayList.add(mp3Map);
+                mp3ArrayList.add(mp3Map);
 
 
-           } while(cursor.moveToNext());
+            } while (cursor.moveToNext());
 
         }
 
@@ -146,3 +150,10 @@ public class DBTools extends SQLiteOpenHelper {
         return mp3Map;
     }
 }
+
+
+
+
+
+
+

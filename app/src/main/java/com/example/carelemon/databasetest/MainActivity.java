@@ -35,7 +35,7 @@ public class MainActivity extends ListActivity {
 
 
     MediaMetadataRetriever tagRetriever = new MediaMetadataRetriever();
-    byte[] art; // xxxxx
+    byte[] art;
 
     private MediaPlayer mediaPlayer;
     private static final String MUSIC_PATH =
@@ -46,6 +46,10 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FillDB db = new FillDB(getApplicationContext());
+        //db.onCreate(db);
+        db.populateDB();
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -82,7 +86,7 @@ public class MainActivity extends ListActivity {
         TextView composer = (TextView) findViewById(R.id.composerTagInfo);
         TextView work = (TextView) findViewById(R.id.workTagInfo);
         TextView piece = (TextView) findViewById(R.id.pieceTagInfo);
-        ImageView album_art = (ImageView) findViewById(R.id.albumArt); // xxxxx
+        ImageView album_art = (ImageView) findViewById(R.id.albumArt);
 
         try {
 
@@ -111,9 +115,7 @@ public class MainActivity extends ListActivity {
             Log.e("error", "error in on list item click");
         }
     }
-
-
-    }
+}
 
 
 

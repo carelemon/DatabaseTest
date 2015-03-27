@@ -6,7 +6,11 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.MediaMetadataRetriever;
+import android.os.Environment;
+import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,22 +22,28 @@ public class DBStuff extends SQLiteOpenHelper{
     private static  final String DATABASE_NAME = "mp3database";
     private static  final String TABLE_NAME = "MP3TABLE";
     private static  final int DATABASE_VERSION = 1;
-    private static  final String UID = "_id";
-    private static  final String COMPOSER = "Composer";
-    private static  final String PIECE = "Piece";
-    private static  final String WORK = "Work";
-    private static  final String GENRE = "Genre";
+    protected static  final String UID = "_id";
+    protected static  final String COMPOSER = "Composer";
+    protected static  final String PIECE = "Piece";
+    protected static  final String WORK = "Work";
+    protected static  final String GENRE = "Genre";
     private static  final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +" (_id INTEGER PRIMARY KEY AUTOINCREMENT,Composer TEXT, Piece TEXT, Work TEXT, Genre TEXT);";
     private static  final String DROP_TABLE = "DROP TABLE " + TABLE_NAME + " IF EXISTS";
 
     public DBStuff(Context context) {
+
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+//        getWritableDatabase().execSQL(CREATE_TABLE);
     }
+
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // ctr+alt+T for "surround with try catch exception"
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        // ctr+alt+T for "surround with try/catch exception"
         try {
             db.execSQL(CREATE_TABLE);
         } catch (SQLException e) {
@@ -44,6 +54,8 @@ public class DBStuff extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
         try {
             db.execSQL(DROP_TABLE);
             onCreate(db);
@@ -54,6 +66,7 @@ public class DBStuff extends SQLiteOpenHelper{
 
     // get all mp3s
     public ArrayList<HashMap<String, String>> getAllMp3s() {
+
 
         ArrayList<HashMap<String, String>> mp3ArrayList = new ArrayList<HashMap<String, String>>();
 
@@ -70,10 +83,10 @@ public class DBStuff extends SQLiteOpenHelper{
                 HashMap<String, String> mp3Map = new HashMap<String, String>();
 
                 mp3Map.put("UID", cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (mp3ID)
-                mp3Map.put("Composer", cursor.getString(1));
-                mp3Map.put("Piece", cursor.getString(2));
-                mp3Map.put("Work", cursor.getString(3));
-                mp3Map.put("Genre", cursor.getString(4));
+                mp3Map.put("COMPOSER", cursor.getString(1));
+                mp3Map.put("PIECE", cursor.getString(2));
+                mp3Map.put("WORK", cursor.getString(3));
+                mp3Map.put("GENRE", cursor.getString(4));
 
                 mp3ArrayList.add(mp3Map);
 
@@ -88,6 +101,8 @@ public class DBStuff extends SQLiteOpenHelper{
 
     public HashMap<String, String> getMp3Info(String id) {
 
+
+
         HashMap<String, String> mp3Map = new HashMap<String, String>();
 
         SQLiteDatabase database = this.getReadableDatabase();
@@ -100,11 +115,11 @@ public class DBStuff extends SQLiteOpenHelper{
 
             do {
 
-                mp3Map.put("UID", cursor.getString(0));    // "cursor.getString(0)" is the first field of the DB (mp3ID)
-                mp3Map.put("Composer", cursor.getString(1));
-                mp3Map.put("Piece", cursor.getString(2));
-                mp3Map.put("Work", cursor.getString(3));
-                mp3Map.put("Genre", cursor.getString(4));
+                mp3Map.put(UID, cursor.getString(0));    // "cursor.getString(0)" is the first field of the DB (mp3ID)
+                mp3Map.put(COMPOSER, cursor.getString(1));
+                mp3Map.put(PIECE, cursor.getString(2));
+                mp3Map.put(WORK, cursor.getString(3));
+                mp3Map.put(GENRE, cursor.getString(4));
 
 
             } while (cursor.moveToNext());
@@ -127,19 +142,38 @@ public class DBStuff extends SQLiteOpenHelper{
 
     public int updateMp3(HashMap<String, String> queryValues) {
 
+
+
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put("UID", queryValues.get("UID"));
-        values.put("Composer", queryValues.get("Composer"));
-        values.put("Piece", queryValues.get("Piece"));
-        values.put("Work", queryValues.get("Work"));
-        values.put("Genre", queryValues.get("Genre"));
+        values.put(UID, queryValues.get(UID));
+        values.put(COMPOSER, queryValues.get(COMPOSER));
+        values.put(PIECE, queryValues.get(PIECE));
+        values.put(WORK, queryValues.get(WORK));
+        values.put(GENRE, queryValues.get(GENRE));
 
 
         return database.update("mp3database", values, "UID" + " = ?", new String[] {queryValues.get("UID")});
 
     }
 
+    public void insertMp3(HashMap<String, String> queryValues) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(UID, queryValues.get(UID));
+        values.put(COMPOSER, queryValues.get(COMPOSER));
+        values.put(PIECE, queryValues.get(PIECE));
+        values.put(WORK, queryValues.get(WORK));
+        values.put(GENRE, queryValues.get(GENRE));
+
+        database.insert("mp3database", null, values);
+
+        database.close();
+
+    }
 }
