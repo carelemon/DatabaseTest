@@ -48,8 +48,11 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
 
         FillDB db = new FillDB(getApplicationContext());
-        //db.onCreate(db);
+      //  db.onCreate(db.getWritableDatabase());
+
         db.populateDB();
+
+        Log.d("songs", Integer.toString((db.getAllMp3s().size())));
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
