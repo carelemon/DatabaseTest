@@ -21,7 +21,6 @@ public class FillDB extends DBStuff{
         final String MUSIC_PATH =
                 Environment.getExternalStoragePublicDirectory("").getAbsolutePath() + "/Music/";
 
-
         File directory = new File(MUSIC_PATH);
         if (directory.listFiles(new Mp3Filter()).length > 0) {
             for (File f : directory.listFiles(new Mp3Filter())) {
@@ -45,6 +44,7 @@ public class FillDB extends DBStuff{
                     record.put(PIECE, piece);
                     record.put(WORK, work);
                     record.put(GENRE, genre);
+                    record.put(LOCATION,f.getAbsolutePath());
                     insertMp3(record);
 
                 }

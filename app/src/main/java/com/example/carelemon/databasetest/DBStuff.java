@@ -21,6 +21,7 @@ public class DBStuff extends SQLiteOpenHelper{
     protected static  final String PIECE = "Piece";
     protected static  final String WORK = "Work";
     protected static  final String GENRE = "Genre";
+    protected static final String LOCATION = "location";
     private static  final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +" (_id INTEGER PRIMARY KEY AUTOINCREMENT,Composer TEXT, Piece TEXT, Work TEXT, Genre TEXT);";
     private static  final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
@@ -86,6 +87,7 @@ public class DBStuff extends SQLiteOpenHelper{
                 mp3Map.put(PIECE, cursor.getString(2));
                 mp3Map.put(WORK, cursor.getString(3));
                 mp3Map.put(GENRE, cursor.getString(4));
+                mp3Map.put(LOCATION,cursor.getString(5));
 
                 mp3ArrayList.add(mp3Map);
 
@@ -106,7 +108,7 @@ public class DBStuff extends SQLiteOpenHelper{
 
         SQLiteDatabase database = this.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM mp3s WHERE UID ='" + id + "'";
+        String selectQuery = "SELECT * FROM MP3TABLE WHERE UID ='" + id + "'";
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 
@@ -119,7 +121,8 @@ public class DBStuff extends SQLiteOpenHelper{
                 mp3Map.put(PIECE, cursor.getString(2));
                 mp3Map.put(WORK, cursor.getString(3));
                 mp3Map.put(GENRE, cursor.getString(4));
-
+                mp3Map.put(LOCATION, cursor.getString(5));
+                //where you put everything here...
 
             } while (cursor.moveToNext());
 
@@ -133,7 +136,7 @@ public class DBStuff extends SQLiteOpenHelper{
 
         SQLiteDatabase database = this.getWritableDatabase();
 
-        String deleteQuery = "DELETE FROM mp3database WHERE UID='" + id + "'";
+        String deleteQuery = "DELETE FROM MP3TABLE WHERE UID='" + id + "'";
 
         database.execSQL(deleteQuery);
 
@@ -141,8 +144,6 @@ public class DBStuff extends SQLiteOpenHelper{
 
     public int updateMp3(HashMap<String, String> queryValues) {
 
-
-
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -152,27 +153,48 @@ public class DBStuff extends SQLiteOpenHelper{
         values.put(PIECE, queryValues.get(PIECE));
         values.put(WORK, queryValues.get(WORK));
         values.put(GENRE, queryValues.get(GENRE));
-
+        values.put(LOCATION, queryValues.get(LOCATION));
 
         return database.update(TABLE_NAME, values, UID + " = ?", new String[] {queryValues.get("UID")});
 
     }
 
     public void insertMp3(HashMap<String, String> queryValues) {
+
         Log.d("inserting",queryValues.get(GENRE));
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
+        //it works now, try adding something that hasnt been added if its gonna increase then its done. Cool, how can I delete the db now?
+        if(!isInRecord(queryValues.get(COMPOSER),queryValues.get(PIECE))) {
         values.put(UID, queryValues.get(UID));
         values.put(COMPOSER, queryValues.get(COMPOSER));
         values.put(PIECE, queryValues.get(PIECE));
         values.put(WORK, queryValues.get(WORK));
         values.put(GENRE, queryValues.get(GENRE));
-
+            values.put(LOCATION, queryValues.get(LOCATION));
         database.insert(TABLE_NAME, null, values);
 
         database.close();
+        }
+            ///try running the app now
 
+
+    }
+
+    public boolean isInRecord(String author, String track) {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c;
+        c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE composer = '" + author + "' AND piece = '" + track + "'",null);
+
+        if(c.getCount() > 0) {
+            return true;
+        }
+
+        //try this. Where should I use this method now?
+        return false;
     }
 }
