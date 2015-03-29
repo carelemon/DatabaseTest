@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 public class FillDB extends DBStuff{
 
-//
 
     public FillDB(Context c) {
        super(c);

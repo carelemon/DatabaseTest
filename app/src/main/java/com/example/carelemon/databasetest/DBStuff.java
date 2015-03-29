@@ -22,7 +22,7 @@ public class DBStuff extends SQLiteOpenHelper{
     protected static  final String WORK = "Work";
     protected static  final String GENRE = "Genre";
     protected static final String LOCATION = "location";
-    private static  final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +" (_id INTEGER PRIMARY KEY AUTOINCREMENT,Composer TEXT, Piece TEXT, Work TEXT, Genre TEXT);";
+    private static  final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +" (_id INTEGER PRIMARY KEY AUTOINCREMENT,Composer TEXT, Piece TEXT, Work TEXT, Genre TEXT, location TEXT);";
     private static  final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     public DBStuff(Context context) {
@@ -82,7 +82,7 @@ public class DBStuff extends SQLiteOpenHelper{
 
                 HashMap<String, String> mp3Map = new HashMap<String, String>();
 
-                mp3Map.put(UID, cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (mp3ID)
+                mp3Map.put(UID, cursor.getString(0));    // "cursor.getString(0)" is the first column of the DB (UID)
                 mp3Map.put(COMPOSER, cursor.getString(1));
                 mp3Map.put(PIECE, cursor.getString(2));
                 mp3Map.put(WORK, cursor.getString(3));
@@ -122,7 +122,6 @@ public class DBStuff extends SQLiteOpenHelper{
                 mp3Map.put(WORK, cursor.getString(3));
                 mp3Map.put(GENRE, cursor.getString(4));
                 mp3Map.put(LOCATION, cursor.getString(5));
-                //where you put everything here...
 
             } while (cursor.moveToNext());
 
@@ -166,20 +165,17 @@ public class DBStuff extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
 
-        //it works now, try adding something that hasnt been added if its gonna increase then its done. Cool, how can I delete the db now?
         if(!isInRecord(queryValues.get(COMPOSER),queryValues.get(PIECE))) {
         values.put(UID, queryValues.get(UID));
         values.put(COMPOSER, queryValues.get(COMPOSER));
         values.put(PIECE, queryValues.get(PIECE));
         values.put(WORK, queryValues.get(WORK));
         values.put(GENRE, queryValues.get(GENRE));
-            values.put(LOCATION, queryValues.get(LOCATION));
+        values.put(LOCATION, queryValues.get(LOCATION));
         database.insert(TABLE_NAME, null, values);
 
         database.close();
         }
-            ///try running the app now
-
 
     }
 
@@ -194,7 +190,6 @@ public class DBStuff extends SQLiteOpenHelper{
             return true;
         }
 
-        //try this. Where should I use this method now?
         return false;
     }
 }

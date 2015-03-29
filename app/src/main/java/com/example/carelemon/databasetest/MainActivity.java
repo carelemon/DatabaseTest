@@ -29,27 +29,32 @@ class Mp3Filter implements FilenameFilter {
     }
 }
 
-
-
 public class MainActivity extends ListActivity {
 
+
+
+
+    private MediaPlayer mediaPlayer;
+
+    private static final String MUSIC_PATH =
+            Environment.getExternalStoragePublicDirectory("").getAbsolutePath() + "/Music/";
+
+    private List<String> songList;
 
     MediaMetadataRetriever tagRetriever = new MediaMetadataRetriever();
     byte[] art;
 
-    private MediaPlayer mediaPlayer;
-    private static final String MUSIC_PATH =
-            Environment.getExternalStoragePublicDirectory("").getAbsolutePath() + "/Music/";
-    private List<String> songList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FillDB db = new FillDB(getApplicationContext()); //Sound man... I will try to use the db now to generate the listview  and use it for retrievving the tags also oh btw store mp3 location into db did you do that?No
-        //id say you should unless you want alot of frustations playing the file, hm ok, I will look into it... surely its like one line...
+        FillDB db = new FillDB(getApplicationContext());
+
         Log.d("songs", Integer.toString((db.getAllMp3s().size())));
+        //db.dropTable();
         db.populateDB();
+
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
